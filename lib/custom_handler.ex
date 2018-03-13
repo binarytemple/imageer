@@ -13,7 +13,9 @@ defmodule Imageer.CustomHandler do
       info("file contents \n#{inspect(file)}")
     end
 
-    Logger.warn("got this far")
+    warn("#{inspect(:cowboy_req.headers(request))}")
+
+    warn("got this far")
 
     {:ok, resp} =
       :cowboy_req.reply(200, [{"content-type", "text/plain"}], "Hello world!", request)
