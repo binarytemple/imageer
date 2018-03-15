@@ -11,6 +11,11 @@ config :imageer,
 
 # Configures the endpoint
 config :imageer, Imageer.Endpoint,
+  http: [dispatch: [
+        {:_,[
+            # {"/foo", Imageer.CustomHandler , []} ,
+            {:_, Plug.Adapters.Cowboy.Handler, {Imageer.Endpoint, []}}
+          ]}]],
   url: [host: "localhost"],
   secret_key_base: "pzRunDKjDtcDlStXUusRe+R8bvezm7zMxFjbgxJQkgzAkgYrSGNb9lIAJc3JKbv9",
   render_errors: [view: Imageer.ErrorView, accepts: ~w(html json)],
@@ -25,12 +30,12 @@ config :logger, :console,
 
 # config :plug_multipart,
 
-config :imageer, Imageer.Endpoint,
-  http: [dispatch: [
-          {:_,[
-              {"/foo", Imageer.CustomHandler , []} ,
-               {:_, Plug.Adapters.Cowboy.Handler, {Imageer.Endpoint, []}}
-            ]}]]
+# config :imageer, Imageer.Endpoint,
+#   http: [dispatch: [
+#           {:_,[
+#               {"/foo", Imageer.CustomHandler , []} ,
+#                {:_, Plug.Adapters.Cowboy.Handler, {Imageer.Endpoint, []}}
+#             ]}]]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
