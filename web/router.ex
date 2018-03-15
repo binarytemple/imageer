@@ -19,6 +19,8 @@ defmodule Imageer.Router do
 
     get("/", PageController, :index)
     resources("/images", ImageController)
+    resources("/uploads", UploadController)
+
   end
 
   # Other scopes may use custom stacks.

@@ -5,10 +5,9 @@ defmodule Imageer.CustomHandler do
     {:ok, req, :no_state}
   end
 
-  @chunk 1
-  @read_length 512  * @chunk
-  @load_length 512  * @chunk
 
+  @read_length 512
+  @load_length 512
 
   @request_args [
     {:length, @load_length},
@@ -21,6 +20,9 @@ defmodule Imageer.CustomHandler do
     if :cowboy_req.has_body(request) do
       # file=stream_body(request, "")
       # info("file contents \n#{inspect(file)}")
+
+      
+
       x= gen_stream(request) |> Enum.to_list
 
       warn("result = #{inspect(x)}")
@@ -46,12 +48,10 @@ defmodule Imageer.CustomHandler do
   end
 
 
-  def stream_body(req0, acc) do
+  def stream_body(req0, acc, chunk_args \\ @request_args
+  ) do
     warn("entering into :  stream_body(req0, ")
-    case :cowboy_req.body(req0, [
-        { :length, @load_length},
-        { :read_length, @read_length}
-      ] ) do
+    case :cowboy_req.body(req0,  chunk_args) do
       {:ok,data, req} ->
         warn("entering into :  ok - size : #{:erlang.size(data)}"  )
         {:ok, <<acc::bitstring,data::bitstring >> ,  req}
@@ -94,7 +94,7 @@ defmodule Imageer.CustomHandler do
                 {:halt, request}
             end
           end,
-          fn request -> nil end
+          fn _ -> nil end
         )
       end
 

@@ -11,11 +11,16 @@ config :imageer,
 
 # Configures the endpoint
 config :imageer, Imageer.Endpoint,
-  http: [dispatch: [
-        {:_,[
-            # {"/foo", Imageer.CustomHandler , []} ,
-            {:_, Plug.Adapters.Cowboy.Handler, {Imageer.Endpoint, []}}
-          ]}]],
+#https://github.com/phoenixframework/phoenix/blob/master/lib/phoenix/endpoint/cowboy_handler.ex
+    http: [dispatch: [
+      {:_, [
+          {"/upload", Imageer.CustomHandler , []} ,
+          # this needs to be disabled in production environment TODO
+          {"/phoenix/live_reload/socket/websocket", Phoenix.Endpoint.CowboyWebSocket,
+            {Phoenix.Transports.WebSocket,
+              {Imageer.Endpoint, Phoenix.LiveReloader.Socket, :websocket}}},
+          {:_, Plug.Adapters.Cowboy.Handler, {Imageer.Endpoint, []}}
+        ]}]],
   url: [host: "localhost"],
   secret_key_base: "pzRunDKjDtcDlStXUusRe+R8bvezm7zMxFjbgxJQkgzAkgYrSGNb9lIAJc3JKbv9",
   render_errors: [view: Imageer.ErrorView, accepts: ~w(html json)],
