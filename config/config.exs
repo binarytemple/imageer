@@ -14,7 +14,17 @@ config :imageer, Imageer.Endpoint,
 #https://github.com/phoenixframework/phoenix/blob/master/lib/phoenix/endpoint/cowboy_handler.ex
     http: [dispatch: [
       {:_, [
-          {"/upload", Imageer.CustomHandler , []} ,
+          {"/upload", Imageer.UploadHandler , [
+
+          #   callback:
+          # &Imageer.Chunker.create/3,
+
+          # callback_args: [
+          # :id, :chunk_size, :callback)
+          # ]
+
+
+          ]} ,
           # this needs to be disabled in production environment TODO
           {"/phoenix/live_reload/socket/websocket", Phoenix.Endpoint.CowboyWebSocket,
             {Phoenix.Transports.WebSocket,
@@ -31,16 +41,6 @@ config :imageer, Imageer.Endpoint,
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
-
-
-# config :plug_multipart,
-
-# config :imageer, Imageer.Endpoint,
-#   http: [dispatch: [
-#           {:_,[
-#               {"/foo", Imageer.CustomHandler , []} ,
-#                {:_, Plug.Adapters.Cowboy.Handler, {Imageer.Endpoint, []}}
-#             ]}]]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
