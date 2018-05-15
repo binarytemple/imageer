@@ -6,9 +6,9 @@ defmodule Imageer.Mixfile do
       app: :imageer,
       version: "0.0.1",
       elixir: "~> 1.4",
-      elixirc_paths: elixirc_paths(Mix.env),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers,
-      start_permanent: Mix.env == :prod,
+      elixirc_paths: elixirc_paths(Mix.env()),
+      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
     ]
@@ -26,7 +26,7 @@ defmodule Imageer.Mixfile do
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "web", "test/support"]
-  defp elixirc_paths(_),     do: ["lib", "web"]
+  defp elixirc_paths(_), do: ["lib", "web"]
 
   # Specifies your project dependencies.
   #
@@ -41,8 +41,9 @@ defmodule Imageer.Mixfile do
       {:phoenix_live_reload, "~> 1.1.3", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.1"},
-      {:gen_state_machine, "~> 2.0"}
-      # , {:flow, "~> 0.13"}
+      {:gen_state_machine, "~> 2.0"},
+      {:ace, "~> 0.16"},
+      {:raxx, "~> 0.15"}
     ]
   end
 
@@ -56,7 +57,7 @@ defmodule Imageer.Mixfile do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "test": ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end

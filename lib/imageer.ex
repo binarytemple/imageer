@@ -11,7 +11,7 @@ defmodule Imageer do
       # Start the Ecto repository
       # supervisor(Imageer.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(Imageer.Endpoint, [])
+      worker(Ace.HTTP.Service, [{Imageer.Router, []}, [port: 8080, cleartext: true]])
       # Start your own worker by calling: Imageer.Worker.start_link(arg1, arg2, arg3)
       # worker(Imageer.Worker, [arg1, arg2, arg3]),
     ]
@@ -20,12 +20,5 @@ defmodule Imageer do
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Imageer.Supervisor]
     Supervisor.start_link(children, opts)
-  end
-
-  # Tell Phoenix to update the endpoint configuration
-  # whenever the application is updated.
-  def config_change(changed, _new, removed) do
-    Imageer.Endpoint.config_change(changed, removed)
-    :ok
   end
 end
