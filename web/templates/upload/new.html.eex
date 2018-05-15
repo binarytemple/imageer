@@ -1,5 +1,0 @@
-<h2>New Upload</h2>
-
-<%= render "form.html", Map.put(assigns, :action, upload_path(@conn, :create)) %>
-
-<span><%= link "Back", to: upload_path(@conn, :index) %></span>
