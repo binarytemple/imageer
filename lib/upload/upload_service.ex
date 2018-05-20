@@ -9,6 +9,8 @@ defmodule Upload.UploadService do
   alias Raxx.Request
   alias Upload.FileWriter
 
+  alias Imageer.Chunker
+
   # Handle request headers
   #
   # This callbacks receives a `Raxx.Request` struct which contains all the headers, path
@@ -20,9 +22,13 @@ defmodule Upload.UploadService do
   def handle_head(%Request{method: :PUT, body: true, path: ["uploads", name]}, _state) do
     Logger.debug("Initiating upload of #{name}")
     file_writer = FileWriter.new(name)
+
+    Process.flag(:trap_exit,true)
+    chunk_size=Application.get_all_env(:upload)[:download_chunk_size]
+    chunker=Chunker.create("#{name}",chunk_size,&Chunker.State.example_callback/2) 
     # Empty list here means that we're not returning anything to a client yet. The state
     # is the file handler used later to write chunks of data.
-    {[], file_writer}
+    {[], %{chunker: chunker}}
   end
 
   # Let's return "bad request" for requests without a body.
@@ -34,12 +40,13 @@ defmodule Upload.UploadService do
 
   # Handle chunks of data
   @impl true
-  def handle_data(chunk, file_writer) do
+  def handle_data(chunk, %{chunker: chunker} = state) do
     Logger.debug(fn -> "Received #{byte_size(chunk)} byte chunk of data" end)
-    FileWriter.write_chunk(file_writer, chunk)
+    #FileWriter.write_chunk(file_writer, chunk)
+    Chunker.send_data(chunker,chunk)      
     # Empty list here means that we're not returning anything to the client yet. Let's
     # write each chunk to a file opened in `handle_head/2` and return the state as is.
-    {[], file_writer}
+    {[], state}
   end
 
   # Handle end of request
@@ -47,10 +54,11 @@ defmodule Upload.UploadService do
   # This callback receives request "trailers", which apparently are HTTP headers sent
   # at the end of the request. I had no idea one could do that.
   @impl true
-  def handle_tail(_trailers, file_writer) do
+  def handle_tail(_trailers,%{chunker: chunker} = state) do
     Logger.debug(fn -> "Upload completed" end)
     # We don't really need to close the file because the process will die anyway.
-    FileWriter.close(file_writer)
+    #FileWriter.close(file_writer)
+    Chunker.flush_and_terminate chunker
     # We're finally returning the response. We don't need to return state here anymore
     # because no callback related to current request will be ever called again.
     response(:no_content)
