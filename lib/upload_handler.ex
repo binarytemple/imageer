@@ -6,15 +6,11 @@ defmodule Imageer.UploadHandler do
     debug("#{__MODULE__} called with init #{inspect(opts)}")
     {:ok, req, :no_state}
   end
-
-  # @read_length 512
-  @load_length 512
-
-  @request_args [
-    {:length, @load_length}
-  ]
-
   def handle(request, state) do
+
+
+
+
     if :cowboy_req.has_body(request) do
 
       p = Chunker.create("foo", 1024, &Chunker.State.example_callback/2)
@@ -54,12 +50,16 @@ defmodule Imageer.UploadHandler do
   end
 
   def gen_stream(request) do
+    request_args = [
+      {:length,
+        Application.get_env(:imageer,Imageer.UploadHandler)[:load_length]
+      }
+    ]
     Stream.resource(
       fn -> request end,
       fn request ->
-        case :cowboy_req.body(request, [
-               {:length, @load_length}
-             ]) do
+        case :cowboy_req.body(request, request_args
+        ) do
           {:ok, "", request} ->
             {:halt, request}
 

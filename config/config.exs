@@ -14,7 +14,7 @@ config :imageer, Imageer.Endpoint,
 #https://github.com/phoenixframework/phoenix/blob/master/lib/phoenix/endpoint/cowboy_handler.ex
     http: [dispatch: [
       {:_, [
-          {"/upload", Imageer.UploadHandler , [
+          {"/upload/:name", Imageer.UploadHandler , [
 
           #   callback:
           # &Imageer.Chunker.create/3,
