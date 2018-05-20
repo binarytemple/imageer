@@ -8,7 +8,13 @@ messages between processes.
 
 Lets show it in action first, then take a look at the implementation.
 
-First we set the terminal process `:trap_exit` flag to true:
+First we set a convenience alias : 
+
+```
+alias Imageer.Chunker
+```
+
+Then we set the terminal process `:trap_exit` flag to true:
 
 ```
 Process.flag(:trap_exit,true)
