@@ -22,3 +22,8 @@ erl_crash.dump
 # secrets file as long as you replace its contents by environment
 # variables.
 /config/prod.secret.exs
+
+garbage.txt
+uploads/garbage.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
